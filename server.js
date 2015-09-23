@@ -28,7 +28,7 @@ var server = net.createServer(function(socket) {
 		broadcast(clientName, message);
 
 		// Log it to the server output
-		process.stdout.write(message.toString('binary'));
+		logDataStream(data)
 	});
 
 
@@ -79,6 +79,25 @@ function removeSocket(socket) {
 
 };
 
+
+function logDataStream(data){  
+  // log the binary data stream in rows of 8 bits
+  var print = "";
+  for (var i = 0; i < data.length; i++) {
+    print += " " + data[i].toString(16);
+
+    // apply proper format for bits with value < 16, observed as int tuples
+    if (data[i] < 16) { print += "0"; }
+
+    // insert a line break after every 8th bit
+    if ((i + 1) % 8 === 0) {
+      print += '\n';
+    };
+  }
+
+  // log the stream
+  console.log(print);
+}
 
 // Listening for any problems with the server
 server.on('error', function(error) {
